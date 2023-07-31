@@ -31,8 +31,12 @@ while True:
     # Espera por uma conexão
     client_socket, client_address = server_socket.accept()
 
+    print("\nConexão estabelecida...\n")
+
     # Inicie a comunicação TLS/SSL
     ssl_socket = ssl_context.wrap_socket(client_socket, server_side=True)
+
+    print("\nSSL socket criado.\n")
 
     # Verifique a autenticidade do certificado do cliente
     client_cert = ssl_socket.getpeercert()
@@ -55,3 +59,5 @@ while True:
 
     # Fecha a conexão com o cliente
     ssl_socket.close()
+
+
