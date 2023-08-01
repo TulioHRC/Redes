@@ -8,6 +8,9 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 HOST = '127.0.0.1'
 PORT = 12345
 server_address = (HOST, PORT)
+CERT_FILE = "CA.crt"
+KEY_FILE = "privateServer.key"
+CLIENT_CERT_FILE = "clientCA.crt"
 
 # Faz o bind do socket ao endereço e porta do servidor
 server_socket.bind(server_address)
@@ -17,16 +20,6 @@ server_socket.listen(5)
 
 print(f"Servidor escutando em {HOST}:{PORT}")
 
-# Use o socket como um contexto SSL (após a conexão inicial)
-ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-ssl_context.load_cert_chain(certfile="CA.crt", keyfile="privateServer.key")
-
-# Exija a autenticação do cliente
-ssl_context.verify_mode = ssl.CERT_REQUIRED
-
-# Carregue o certificado do cliente para verificar a autenticidade
-ssl_context.load_verify_locations(cafile="clientCA.crt")
-
 while True:
     # Espera por uma conexão
     client_socket, client_address = server_socket.accept()
@@ -34,7 +27,7 @@ while True:
     print("\nConexão estabelecida...\n")
 
     # Inicie a comunicação TLS/SSL
-    ssl_socket = ssl_context.wrap_socket(client_socket, server_side=True)
+    ssl_socket = ssl.wrap_socket(client_socket, server_side=True, certfile=CERT_FILE, keyfile=KEY_FILE, ca_certs=CLIENT_CERT_FILE, cert_reqs=ssl.CERT_REQUIRED)
 
     print("\nSSL socket criado.\n")
 
