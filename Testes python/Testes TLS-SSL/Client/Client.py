@@ -14,7 +14,7 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
     # Conecte-se ao servidor
-    ssl_socket = ssl.wrap_socket(client_socket, certfile=CERT_FILE, keyfile=KEY_FILE, ca_certs=SERVER_CERT_FILE)
+    ssl_socket = ssl.wrap_socket(client_socket, certfile=CERT_FILE, keyfile=KEY_FILE, ca_certs=SERVER_CERT_FILE, cert_reqs=ssl.CERT_REQUIRED)
     ssl_socket.connect(server_address)
 
     # Enviar e receber dados com o servidor através do ssl_socket

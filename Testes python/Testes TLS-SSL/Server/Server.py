@@ -40,12 +40,16 @@ while True:
     print("Cliente autenticado:", client_cert['subject'])
     
     try:
-        # Recebe os dados enviados pelo cliente
-        data = ssl_socket.recv(1024)
+        while True:
+            # Recebe os dados enviados pelo cliente
+            data = ssl_socket.recv(1024)
 
-        # Processa os dados recebidos
-        if data:
-            print(f"Mensagem recebida do cliente: {data.decode()}")
+            # Processa os dados recebidos
+            if data:
+                print(f"Mensagem recebida do cliente: {data.decode()}")
+
+            resposta = "Mensagem recebida."
+            ssl_socket.sendall(resposta.encode())
 
     except Exception as e:
         print(f"\nErro: {e}\n\n")
