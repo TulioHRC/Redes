@@ -7,7 +7,7 @@ PORT = 12345
 
 CERT_FILE = "certServer.crt"
 KEY_FILE = "privateServer.key"
-CLIENTS_CERT_FILES = "certClient.crt"
+CLIENT_CERT_FILE = "certClient.crt"
 
 class Server:
     def __init__(self, serverAddress):
@@ -29,7 +29,13 @@ class Server:
         
     def authentication(self, clientSocket):
         try:
-            sslSocket = ssl.wrap_socket(clientSocket, server_side=True, certfile=CERT_FILE, keyfile=KEY_FILE, ca_certs=CLIENTS_CERT_FILES, cert_reqs=ssl.CERT_REQUIRED)
+            sslContext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+            sslContext.load_cert_chain(certfile=CERT_FILE, keyfile=KEY_FILE)
+            sslContext.load_verify_locations(cafile=CLIENT_CERT_FILE)
+            sslContext.verify_mode = ssl.CERT_REQUIRED
+
+            sslSocket = sslContext.wrap_socket(clientSocket, server_side=True)
+
 
             clientCerts = sslSocket.getpeercert()
             if clientCerts:

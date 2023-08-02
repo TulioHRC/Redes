@@ -1,5 +1,6 @@
 import socket
 import ssl
+import warnings
 
 # Configuration
 HOST = "127.0.0.1"
@@ -7,7 +8,10 @@ PORT = 12345
 
 CERT_FILE = "certClient.crt"
 KEY_FILE = "privateClient.key"
-SERVER_CERT_FILES = "certServer.crt"
+SERVER_CERT_FILE = "certServer.crt"
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 class Client:
     def __init__(self, serverAddress):
@@ -20,9 +24,11 @@ class Client:
 
     def secureConnection(self, serverAddress):
         try:
-            sslSocket = ssl.wrap_socket(self.clientSocket, certfile=CERT_FILE, keyfile=KEY_FILE, ca_certs=SERVER_CERT_FILES, cert_reqs=ssl.CERT_REQUIRED)
+            sslSocket = ssl.wrap_socket(self.clientSocket, certfile=CERT_FILE, keyfile=KEY_FILE, ca_certs=SERVER_CERT_FILE, cert_reqs=ssl.CERT_REQUIRED)
+            
             sslSocket.connect(serverAddress)
-
+            print("\nConnection estabilished...\n")
+ 
             return sslSocket
 
         except Exception as e:
